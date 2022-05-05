@@ -1,16 +1,9 @@
-document.__proto__ = new Proxy(document.__proto__, {
-  __original: document.title,
-  __template: "<original>",
-  set: function (obj, prop, value, recv) {
-    if (prop == "title")
-      if (typeof value === "symbol")
-        value = (this.__template = value.description).replace(/<original>/gi, this.__original);
-      else value = this.__template.replace(/<original>/gi, this.__original = value);
-    return Reflect.set(obj, prop, value, recv);
-  },
-  get: function (obj, prop, recv) {
-    if (prop == "title")
-      return this.__original;
-    return Reflect.get(obj, prop, recv);
-  }
+let setter = document.__lookupSetter__("title");
+let original = document.title;
+let template = "<original>";
+document.__defineSetter__("title", function (value) {
+  if (typeof value === "symbol")
+    value = (template = value.description).replace(/<original>/gi, original);
+  else value = template.replace(/<original>/gi, original = value);
+  setter.call(this, value);
 });
