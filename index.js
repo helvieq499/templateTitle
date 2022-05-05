@@ -1,5 +1,5 @@
 document.__proto__ = new Proxy(document.__proto__, {
-  __original: "",
+  __original: document.title,
   __template: "<original>",
   set: function (obj, prop, value, recv) {
     if (prop == "title")
